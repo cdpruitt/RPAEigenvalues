@@ -15,7 +15,7 @@ import sys
 #     b2 ------------- (-4 MeV)
 #    
 
-def solveRPA(L): # L is coupling constant
+def solveRPA(L, f): # L is coupling constant
 
     # Define energies
     Ea1 = 2
@@ -51,12 +51,31 @@ def solveRPA(L): # L is coupling constant
     # calculate eigenvalues and print results
     eigenvalues = np.linalg.eigvals(A)
     for eigenvalue in eigenvalues:
-        print eigenvalue
+        f.write(str(eigenvalue.real) + "\n")
 
 def main():
 
-    Lvalues = [-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7,8,9,10]
-    for L in Lvalues:
-        solveRPA(L)
+    #Lvalues = [-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,1,2,3,4,5,6,7,8,9,10]
+    #Lvalues =
+    #[-0.1,-0.09,-0.08,-0.07,-0.06,-0.05,-0.04,-0.03,-0.02,-0.01,0.01,0.02,0.03,0.04,0.05,0.06,0.07,8,9,10]
+
+    Lstart = -100
+    Lstop = 100
+    Lscaledown = 100
+
+    for L in range(Lstart, Lstop, 1):
+
+        if(L==0):
+            continue
+
+        L = float(L)/Lscaledown # scaledown to appropriate size
+
+        if (L<0):
+            name = "_" + "%.2f" % (0-L)
+        else:
+            name = "%.2f" % L
+
+        f = open(str(name)+".txt","w")
+        solveRPA((1/float(L)), f)
 
 main()

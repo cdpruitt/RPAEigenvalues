@@ -12,14 +12,30 @@
 
     vector<TGraph*> graphs;
 
-    for(int L=0; L<=10; L++)
+    for(double L=-0.3; L<=0.3; L += 0.01)
     {
         if(L==0)
         {
             continue;
         }
 
-        string fileName = to_string(L) + ".txt";
+        string fileName;
+        stringstream numberFormatter;
+
+        if(L<0)
+        {
+            numberFormatter << fixed << setprecision(2) << 0-L;
+            fileName = "_" + numberFormatter.str() + ".txt";
+        }
+
+        else
+        {
+            numberFormatter << fixed << setprecision(2) << L;
+            fileName = numberFormatter.str() + ".txt";
+        }
+
+        cout << fileName << endl;
+
         ifstream file(fileName);
 
         vector<double> couplingConst;
@@ -30,16 +46,15 @@
         {
             couplingConst.push_back((double)L);
             eigenvalues.push_back(stod(line));
-
-            cout << line << endl;
         }
 
         graphs.push_back(new TGraph(eigenvalues.size(), &eigenvalues[0], &couplingConst[0]));
         mg->Add(graphs.back(), "AP");
 
         graphs.back()->SetMarkerColor(kRed);
-        graphs.back()->SetMarkerSize(3);
+        graphs.back()->SetMarkerSize(1);
     }
 
     mg->Draw("AP");
+    mg->GetYaxis()->SetRangeUser(-10,10);
 }
